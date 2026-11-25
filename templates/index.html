@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A machine learning application that predicts a country's Human Development Group using key development indicators.">
+    <title>HDI Insight | Human Development Prediction</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <a class="brand" href="/" aria-label="HDI Insight home">
+                <span class="brand-mark">H</span>
+                <span>HDI<span class="brand-light">INSIGHT</span></span>
+            </a>
+            <span class="topbar-tag"><span class="status-dot"></span> MACHINE LEARNING PROJECT</span>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-copy">
+                    <p class="eyebrow">UNDERSTANDING HUMAN DEVELOPMENT</p>
+                    <h1>Measure progress<br><span>beyond numbers.</span></h1>
+                    <p class="hero-description">
+                        Explore how health, education and income indicators come together
+                        to estimate a country's Human Development Group.
+                    </p>
+                    <div class="hero-points">
+                        <span><i>01</i> Health</span>
+                        <span><i>02</i> Education</span>
+                        <span><i>03</i> Standard of living</span>
+                    </div>
+                </div>
+                <div class="hero-art" aria-hidden="true">
+                    <div class="orbit orbit-one"></div>
+                    <div class="orbit orbit-two"></div>
+                    <div class="globe">🌍</div>
+                    <div class="art-label label-top"><span class="mini-dot"></span> HUMAN DEVELOPMENT</div>
+                    <div class="art-label label-bottom">HEALTH · KNOWLEDGE · INCOME</div>
+                    <div class="floating-stat"><strong>3</strong><span>core dimensions<br>of development</span></div>
+                </div>
+            </section>
+
+            <section class="workspace">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">HDI GROUP PREDICTOR</p>
+                        <h2>Enter development indicators</h2>
+                        <p class="section-description">Provide the values below to generate a machine learning prediction.</p>
+                    </div>
+                    <span class="model-chip"><span class="status-dot"></span> MODEL READY</span>
+                </div>
+
+                <div class="content-grid">
+                    <form class="predict-card" action="{{ url_for('predict') }}" method="POST">
+                        <div class="card-heading">
+                            <div>
+                                <h3>Country indicators</h3>
+                                <p>Enter the available statistical values</p>
+                            </div>
+                            <span class="step-count">01 / 04</span>
+                        </div>
+
+                        <div class="fields-grid">
+                            <div class="field">
+                                <label for="life">Life expectancy at birth <span class="unit">Years</span></label>
+                                <input id="life" type="number" step="any" min="0.01" name="life"
+                                       placeholder="e.g. 78.5" value="{{ values.get('life', '') if values else '' }}" required>
+                                <small>Average expected lifespan at birth.</small>
+                            </div>
+                            <div class="field">
+                                <label for="mean">Mean years of schooling <span class="unit">Years</span></label>
+                                <input id="mean" type="number" step="any" min="0" name="mean"
+                                       placeholder="e.g. 12.5" value="{{ values.get('mean', '') if values else '' }}" required>
+                                <small>Average number of completed schooling years.</small>
+                            </div>
+                            <div class="field">
+                                <label for="expected">Expected years of schooling <span class="unit">Years</span></label>
+                                <input id="expected" type="number" step="any" min="0" name="expected"
+                                       placeholder="e.g. 16" value="{{ values.get('expected', '') if values else '' }}" required>
+                                <small>Years of education a child is expected to receive.</small>
+                            </div>
+                            <div class="field">
+                                <label for="gni">Gross national income per capita <span class="unit">US$</span></label>
+                                <input id="gni" type="number" step="any" min="0" name="gni"
+                                       placeholder="e.g. 50000" value="{{ values.get('gni', '') if values else '' }}" required>
+                                <small>Income per person, expressed in US dollars.</small>
+                            </div>
+                        </div>
+
+                        <button class="predict-button" type="submit">
+                            <span>Predict HDI group</span><span class="button-arrow">→</span>
+                        </button>
+                        <p class="form-note"><span>ⓘ</span> Use values in the same units and format as the model's training dataset.</p>
+
+                        {% if error %}
+                        <div class="message error-message" role="alert">{{ error }}</div>
+                        {% endif %}
+                        {% if prediction_text %}
+                        <div class="message result-message" role="status">
+                            <span class="result-icon">✓</span>
+                            <div>
+                                <p class="result-kicker">PREDICTION COMPLETE</p>
+                                <h3>{{ prediction_text }}</h3>
+                                <p class="result-caption">This is the group predicted by the trained machine learning model.</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </form>
+
+                    <aside class="info-column">
+                        <div class="info-card about-card">
+                            <span class="info-icon">✦</span>
+                            <p class="eyebrow">ABOUT THE PROJECT</p>
+                            <h3>Development is more than economic growth.</h3>
+                            <p>HDI brings together health, education and standard of living to give a broader view of human progress.</p>
+                        </div>
+                        <div class="info-card dimensions-card">
+                            <p class="eyebrow">THE THREE DIMENSIONS</p>
+                            <div class="dimension-row">
+                                <span class="dimension-icon health-icon">＋</span>
+                                <div><strong>Health</strong><small>Life expectancy</small></div>
+                            </div>
+                            <div class="dimension-row">
+                                <span class="dimension-icon education-icon">▤</span>
+                                <div><strong>Education</strong><small>Mean and expected schooling</small></div>
+                            </div>
+                            <div class="dimension-row">
+                                <span class="dimension-icon income-icon">↗</span>
+                                <div><strong>Living standard</strong><small>Gross national income per capita</small></div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <span>HDI INSIGHT</span>
+            <span>Human Development Index Prediction System</span>
+            <span>Built with Machine Learning</span>
+        </footer>
+    </div>
+</body>
+</html>
